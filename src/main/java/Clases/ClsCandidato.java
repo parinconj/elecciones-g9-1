@@ -10,8 +10,8 @@ public class ClsCandidato extends ClsPersona {
 
     private String partidoPolitico;
     private String ciudadOrigen;
-    private String descripcion;
-    private String mensajeCampania;
+    private String descripcion = "";
+    private String mensajeCampania = "";
     private LinkedList<String> propuestas;
 
     public ClsCandidato(String partidoPolitico, String ciudadOrigen, String numeroDocumento, String nombre, String telefono, String correo) {
