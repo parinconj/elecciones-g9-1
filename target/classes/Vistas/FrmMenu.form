@@ -36,7 +36,10 @@
                           <Component id="botonMenuCandidato" min="-2" pref="143" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton3" min="-2" pref="143" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jButton3" pref="143" max="32767" attributes="0"/>
+                          <Component id="jButton2" max="32767" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -54,7 +57,10 @@
                   <Component id="jButton3" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jButton1" min="-2" pref="42" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton1" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="jButton2" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="101" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -89,6 +95,11 @@
     <Component class="javax.swing.JButton" name="jButton3">
       <Properties>
         <Property name="text" type="java.lang.String" value="Gestor votante"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Gesto Elecci&#xf3;n"/>
       </Properties>
     </Component>
   </SubComponents>
