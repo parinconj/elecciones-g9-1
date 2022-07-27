@@ -4,6 +4,7 @@
  */
 package Controladores;
 
+import Clases.ClsCandidato;
 import Clases.ClsEleccion;
 import Clases.ClsMensaje;
 import Modelos.MdlEleccion;
@@ -14,31 +15,43 @@ import java.util.LinkedList;
  * @author davidperezarias
  */
 public class CtlEleccion {
-    
+
     MdlEleccion modelo;
 
     public CtlEleccion() {
         this.modelo = new MdlEleccion();
     }
-    
-    
-    
-    public ClsMensaje agregarEleccion(ClsEleccion eleccion){
-    
+
+    public ClsMensaje agregarEleccion(ClsEleccion eleccion) {
+
         ClsMensaje mensaje = this.modelo.agregarEleccion(eleccion);
-        
+
         return mensaje;
-        
-    
+
     }
-    
-    
-    public LinkedList<ClsEleccion> obtenerElecciones(){
-    
+
+    public LinkedList<ClsEleccion> obtenerElecciones() {
+
         LinkedList<ClsEleccion> elecciones = this.modelo.obtenerElecciones();
-        
+
         return elecciones;
-    
+
+    }
+
+    public ClsMensaje asociarCandidatoEleccion(String idCandidato, String idEleccion) {
+        
+        return this.modelo.asociarCandidatoEleccion(idCandidato, idEleccion);
+        
     }
     
+     public LinkedList<ClsCandidato> obtenerCandidatosEleccion(String idEleccion) {
+
+        LinkedList<ClsCandidato> candidatos = this.modelo.obtenerCandidatosEleccion(idEleccion);
+
+        return candidatos;
+
+    }
+    
+    
+
 }

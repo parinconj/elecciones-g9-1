@@ -10,6 +10,8 @@ import Clases.ClsJdbc;
 import Clases.ClsMensaje;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.LinkedList;
 
 /**
@@ -17,14 +19,14 @@ import java.util.LinkedList;
  * @author davidperezarias
  */
 public class MdlEleccion {
-    
+
     ClsJdbc jdbc = new ClsJdbc();
 
     public MdlEleccion() {
-        
+
         jdbc.CrearConexion();
     }
-    
+
     public ClsMensaje agregarEleccion(ClsEleccion eleccion) {
 
         ClsMensaje mensaje;
@@ -56,8 +58,7 @@ public class MdlEleccion {
         }
 
     }
-    
-                     
+
     public LinkedList<ClsEleccion> obtenerElecciones() {
 
         try {
@@ -81,7 +82,7 @@ public class MdlEleccion {
                 String ganador = resultados.getString("ganador");
 
                 ClsEleccion eleccion = new ClsEleccion(idEleccion, descripcion, tipo,
-                fechaInicio, fechaFin, estado);
+                        fechaInicio, fechaFin, estado);
 
                 elecciones.add(eleccion);
 
@@ -94,6 +95,81 @@ public class MdlEleccion {
         }
 
     }
-    
-    
+
+    public ClsMensaje asociarCandidatoEleccion(String idCandidato, String idEleccion) {
+
+        ClsMensaje mensaje;
+
+        try {
+
+            String sql = "INSERT INTO tbl_candidatos_x_eleccion VALUES (?, ?, NOW())";
+            PreparedStatement sentencia = this.jdbc.conexion.prepareStatement(sql);
+            sentencia.setString(1, idCandidato);
+            sentencia.setString(2, idEleccion);
+
+            int resultado = sentencia.executeUpdate();
+
+            if (resultado >= 1) {
+                mensaje = new ClsMensaje(ClsMensaje.OK, "Se ha asociado un candidato");
+            } else {
+                mensaje = new ClsMensaje(ClsMensaje.ERROR, "No se ha podido asociar");
+            }
+
+            return mensaje;
+
+        } catch (SQLException e) {
+            int code = e.getErrorCode();
+            
+            if (code == 1062) {
+                mensaje = new ClsMensaje(ClsMensaje.ERROR, "Este candidato ya está asociado");
+            } else {
+                mensaje = new ClsMensaje(ClsMensaje.ERROR, "Uy un error: " + e.getMessage());
+            }
+
+            return mensaje;
+        }
+
+    }
+
+    public LinkedList<ClsCandidato> obtenerCandidatosEleccion(String idEleccion) {
+
+        try {
+
+            LinkedList<ClsCandidato> candidatos = new LinkedList<>();
+
+            String consulta = "SELECT tc.* FROM tbl_candidatos_x_eleccion te,"
+                    + " tbl_candidatos tc WHERE te.id_eleccion = ? AND "
+                    + " te.id_candidato = tc.id_candidato";
+
+            PreparedStatement sentencia = this.jdbc.conexion.prepareStatement(consulta);
+            sentencia.setString(1, idEleccion);
+
+            ResultSet resultados = sentencia.executeQuery();
+
+            while (resultados.next()) {
+
+                String partido = resultados.getString("partido_politico");
+                String numeroDocumento = resultados.getString("id_candidato");
+                String nombre = resultados.getString("nombre");
+                String telefono = resultados.getString("telefono");
+                String correo = resultados.getString("correo");
+                String descripcion = resultados.getString("descripcion");
+
+                ClsCandidato candidato = new ClsCandidato(partido, "", numeroDocumento,
+                        nombre, telefono, correo);
+
+                candidato.setDescripcion(descripcion);
+
+                candidatos.add(candidato);
+
+            }
+
+            return candidatos;
+
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
 }

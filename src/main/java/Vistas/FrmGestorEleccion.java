@@ -7,9 +7,12 @@ package Vistas;
 import Clases.ClsCandidato;
 import Clases.ClsEleccion;
 import Clases.ClsMensaje;
+import Controladores.CtlCandidato;
 import Controladores.CtlEleccion;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,6 +22,8 @@ import javax.swing.table.DefaultTableModel;
 public class FrmGestorEleccion extends javax.swing.JFrame {
 
     CtlEleccion controladorEleccion;
+    CtlCandidato controladorCandidato;
+    LinkedList<ClsCandidato> candidatos;
 
     /**
      * Creates new form FrmGestorEleccion
@@ -26,7 +31,9 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
     public FrmGestorEleccion() {
         initComponents();
         this.controladorEleccion = new CtlEleccion();
+        this.controladorCandidato = new CtlCandidato();
         this.ObtenerElecciones();
+        this.ObtenerCandidatos();
     }
 
     /**
@@ -49,8 +56,6 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
         campoFechaFin = new com.toedter.calendar.JDateChooser();
         botonAgregar = new javax.swing.JButton();
         botonActualizar = new javax.swing.JButton();
-        scroll1 = new javax.swing.JScrollPane();
-        tablaElecciones = new javax.swing.JTable();
         scroll2 = new javax.swing.JScrollPane();
         tablaCandidatosEleccion = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -62,6 +67,9 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         botonEliminar = new javax.swing.JButton();
         botonEditar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        scroll1 = new javax.swing.JScrollPane();
+        tablaElecciones = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,7 +113,7 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(comboTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(campoFechaInicio, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                .addComponent(campoFechaInicio, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(campoFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -138,19 +146,6 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
-        tablaElecciones.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Id", "Descripción", "Tipo", "Fecha inicio", "Fecha fin", "Estado", "Ganador"
-            }
-        ));
-        scroll1.setViewportView(tablaElecciones);
-
         tablaCandidatosEleccion.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -175,6 +170,11 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
         comboCandidatos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         botonAsociar.setText("Asociar");
+        botonAsociar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonAsociarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -183,10 +183,13 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(comboCandidatos, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botonAsociar))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addComponent(comboCandidatos, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(botonAsociar))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,7 +218,7 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(botonEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(botonEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,6 +229,27 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
                 .addComponent(botonEditar)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
+
+        tablaElecciones.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Id", "Descripción", "Tipo", "Fecha inicio", "Fecha fin", "Estado", "Ganador"
+            }
+        ));
+        tablaElecciones.setCellSelectionEnabled(true);
+        tablaElecciones.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaEleccionesMouseClicked(evt);
+            }
+        });
+        scroll1.setViewportView(tablaElecciones);
+
+        jScrollPane1.setViewportView(scroll1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -240,13 +264,15 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(scroll1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                                    .addComponent(scroll2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(scroll2, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -259,9 +285,9 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(scroll1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -273,6 +299,29 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    public void ObtenerCandidatos() {
+        this.candidatos = this.controladorCandidato.Obtenercandidatos();
+        this.ActualizarComboCandidatos(this.candidatos);
+
+    }
+
+    private void ActualizarComboCandidatos(LinkedList<ClsCandidato> lista) {
+
+        DefaultComboBoxModel modelo = (DefaultComboBoxModel) this.comboCandidatos.getModel();
+
+        modelo.removeAllElements();
+
+        for (ClsCandidato c : lista) {
+
+            String candidato = c.getNombre() + '-' + c.getNumeroDocumento();
+
+            modelo.addElement(candidato);
+
+        }
+
+    }
+
 
     private void botonAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarActionPerformed
 
@@ -311,6 +360,64 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_botonAgregarActionPerformed
+
+    private void botonAsociarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAsociarActionPerformed
+
+        int columna = 0;
+        int fila = this.tablaElecciones.getSelectedRow();
+
+        String idEleccion = this.tablaElecciones.getModel().getValueAt(fila, columna).toString();
+
+        String[] partesCandidato = this.comboCandidatos.getSelectedItem().toString().split("-");
+
+        String idCandidato = partesCandidato[1];
+
+        ClsMensaje mensaje = this.controladorEleccion.asociarCandidatoEleccion(idCandidato, idEleccion);
+
+        if (mensaje.getTipo().equals(ClsMensaje.OK)) {
+            //this.ObtenerElecciones();
+            this.ObtenerCandidatosEleccion(idEleccion);
+        }
+        
+        JOptionPane.showMessageDialog(rootPane, mensaje.getTexto());
+
+    }//GEN-LAST:event_botonAsociarActionPerformed
+
+    private void tablaEleccionesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaEleccionesMouseClicked
+
+        int columna = 0;
+        int fila = this.tablaElecciones.getSelectedRow();
+
+        String idEleccion = this.tablaElecciones.getModel().getValueAt(fila, columna).toString();
+        
+        this.ObtenerCandidatosEleccion(idEleccion);
+        
+    }//GEN-LAST:event_tablaEleccionesMouseClicked
+
+    public void ObtenerCandidatosEleccion(String idEleccion) {
+
+        LinkedList<ClsCandidato> listaCandidatos = this.controladorEleccion.obtenerCandidatosEleccion(idEleccion);
+        ActualizarTablaCandidatos(listaCandidatos);
+    }
+
+    private void ActualizarTablaCandidatos(LinkedList<ClsCandidato> lista) {
+
+        DefaultTableModel modelo = (DefaultTableModel) this.tablaCandidatosEleccion.getModel();
+        modelo.setRowCount(0);
+
+        for (ClsCandidato c : lista) {
+
+            Object[] fila = {
+                c.getNumeroDocumento(),
+                c.getNombre(),
+                ""
+            };
+
+            modelo.addRow(fila);
+
+        }
+
+    }
 
     public void ObtenerElecciones() {
 
@@ -396,6 +503,7 @@ public class FrmGestorEleccion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelDescri;
     private javax.swing.JScrollPane scroll1;
     private javax.swing.JScrollPane scroll2;
